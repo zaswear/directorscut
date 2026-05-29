@@ -1,67 +1,87 @@
 const OMDB_BASE = "https://www.omdbapi.com";
-const API_KEY = process.env.OMDB_API_KEY;
 
-export interface OmdbMovie {
-  imdbID: string;
-  Title: string;
-  Year: string;
-  Runtime: string;
-  Genre: string;
-  Director: string;
-  Actors: string;
-  Plot: string;
-  Poster: string;
-  imdbRating: string;
-  imdbVotes: string;
-  Country: string;
-  Language: string;
-  Rated: string;
-  Response: string;
-  Error?: string;
+function apiKey() {
+  const key = process.env.OMDB_API_KEY;
+  if (!key) throw new Error("OMDB_API_KEY no configurada");
+  return key;
 }
+
+// ─── Tipos ───────────────────────────────────────────────────────────────────
 
 export interface OmdbSearchResult {
   imdbID: string;
-  Title: string;
-  Year: string;
+  Title:  string;
+  Year:   string;
   Poster: string;
-  Type: string;
+  Type:   string;
 }
 
+export interface OmdbMovie {
+  imdbID:     string;
+  Title:      string;
+  Year:       string;
+  Runtime:    string;
+  Genre:      string;
+  Director:   string;
+  Actors:     string;
+  Plot:       string;
+  Poster:     string;
+  imdbRating: string;
+  imdbVotes:  string;
+  Country:    string;
+  Language:   string;
+  Rated:      string;
+  Response:   string;
+  Error?:     string;
+}
+
+// ─── API calls ───────────────────────────────────────────────────────────────
+
+/** Busca películas por título. Resultados cacheados 24 h. */
 export async function searchOmdb(query: string): Promise<OmdbSearchResult[]> {
-  const res = await fetch(
-    `${OMDB_BASE}/?apikey=${API_KEY}&s=${encodeURIComponent(query)}&type=movie`
-  );
+  const url = `${OMDB_BASE}/?apikey=${apiKey()}&s=${encodeURIComponent(query)}&type=movie`;
+  const res = await fetch(url, { next: { revalidate: 86400 } });
+  if (!res.ok) throw new Error(`OMDb error ${res.status}`);
   const data = await res.json();
   if (data.Response === "False") return [];
   return (data.Search ?? []) as OmdbSearchResult[];
 }
 
+/** Obtiene ficha completa por IMDb ID. Cacheada 24 h. */
 export async function getOmdbById(imdbId: string): Promise<OmdbMovie | null> {
-  const res = await fetch(
-    `${OMDB_BASE}/?apikey=${API_KEY}&i=${imdbId}&plot=full`
-  );
+  const url = `${OMDB_BASE}/?apikey=${apiKey()}&i=${imdbId}&plot=full`;
+  const res = await fetch(url, { next: { revalidate: 86400 } });
+  if (!res.ok) throw new Error(`OMDb error ${res.status}`);
   const data: OmdbMovie = await res.json();
   if (data.Response === "False") return null;
   return data;
 }
 
-/** Convierte un OmdbMovie a los campos que guardamos en la base de datos */
+// ─── Parseo ──────────────────────────────────────────────────────────────────
+
+function clean(value: string | undefined): string | null {
+  return !value || value === "N/A" ? null : value;
+}
+
+/**
+ * Convierte un OmdbMovie a los campos que guardamos en DB.
+ * Arrays devueltos como string[] listos para JSON.stringify().
+ */
 export function parseOmdbMovie(m: OmdbMovie) {
   return {
-    imdbId:     m.imdbID,
-    title:      m.Title,
-    year:       parseInt(m.Year) || null,
-    durationMin:parseInt(m.Runtime) || null,
-    genres:     m.Genre !== "N/A" ? m.Genre.split(", ") : [],
-    directors:  m.Director !== "N/A" ? m.Director.split(", ") : [],
-    cast:       m.Actors !== "N/A" ? m.Actors.split(", ").slice(0, 5) : [],
-    plot:       m.Plot !== "N/A" ? m.Plot : null,
-    posterUrl:  m.Poster !== "N/A" ? m.Poster : null,
-    imdbRating: m.imdbRating !== "N/A" ? parseFloat(m.imdbRating) : null,
-    imdbVotes:  m.imdbVotes !== "N/A" ? parseInt(m.imdbVotes.replace(/,/g, "")) : null,
-    country:    m.Country !== "N/A" ? m.Country : null,
-    language:   m.Language !== "N/A" ? m.Language : null,
-    rated:      m.Rated !== "N/A" ? m.Rated : null,
+    imdbId:       m.imdbID,
+    title:        m.Title,
+    year:         parseInt(m.Year) || null,
+    durationMin:  parseInt(m.Runtime) || null,
+    genres:       clean(m.Genre)    ? m.Genre.split(", ")    : [] as string[],
+    directors:    clean(m.Director) ? m.Director.split(", ") : [] as string[],
+    cast:         clean(m.Actors)   ? m.Actors.split(", ").slice(0, 5) : [] as string[],
+    plot:         clean(m.Plot),
+    posterUrl:    clean(m.Poster),
+    imdbRating:   clean(m.imdbRating) ? parseFloat(m.imdbRating) : null,
+    imdbVotes:    clean(m.imdbVotes)  ? parseInt(m.imdbVotes.replace(/,/g, "")) : null,
+    country:      clean(m.Country),
+    language:     clean(m.Language),
+    rated:        clean(m.Rated),
   };
 }
