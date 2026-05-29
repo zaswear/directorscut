@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans, Space_Mono } from "next/font/google";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -25,7 +26,7 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Director's Cut",
+  title: { default: "Director's Cut", template: "%s · Director's Cut" },
   description: "Mi diario cinematográfico personal",
   robots: "noindex, nofollow",
 };
@@ -40,7 +41,9 @@ export default function RootLayout({
       lang="es"
       className={`${cormorant.variable} ${dmSans.variable} ${spaceMono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
