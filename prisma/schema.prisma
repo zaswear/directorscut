@@ -1,11 +1,11 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 // ─── Movie ────────────────────────────────────────────────────────────────────
@@ -21,9 +21,9 @@ model Movie {
   originalTitle String?  @map("original_title")
   year          Int?
   durationMin   Int?     @map("duration_min")
-  genres        String   @default("[]") // JSON: string[]
-  directors     String   @default("[]") // JSON: string[]
-  cast          String   @default("[]") // JSON: string[] (primeros 5)
+  genres        String   @default("[]")
+  directors     String   @default("[]")
+  cast          String   @default("[]")
   plot          String?
   posterUrl     String?  @map("poster_url")
   imdbRating    Float?   @map("imdb_rating")
@@ -35,11 +35,11 @@ model Movie {
   // Datos personales
   myRating      Float?   @map("my_rating")
   watchedAt     DateTime? @map("watched_at")
-  watchFormat   String?  @map("watch_format") // WatchFormat values
-  review        String?  // HTML del editor Tiptap
+  watchFormat   String?  @map("watch_format")
+  review        String?
   hasImdbReview Boolean  @default(false) @map("has_imdb_review")
   notes         String?
-  status        String   @default("pendiente") // MovieStatus values
+  status        String   @default("pendiente")
 
   // Importación
   importedFromImdb Boolean @default(false) @map("imported_from_imdb")
@@ -48,7 +48,6 @@ model Movie {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  // Relaciones
   images     Image[]
   references Reference[]
 
@@ -60,7 +59,6 @@ model Movie {
 }
 
 // ─── Image ────────────────────────────────────────────────────────────────────
-// type: "gallery" | "poster_alt"
 
 model Image {
   id       Int    @id @default(autoincrement())
@@ -69,7 +67,7 @@ model Image {
   url      String
   width    Int?
   height   Int?
-  type     String @default("gallery") // ImageType values
+  type     String @default("gallery")
 
   createdAt DateTime @default(now()) @map("created_at")
 
