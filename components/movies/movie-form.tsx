@@ -109,10 +109,11 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 export function MovieForm({ mode, movieId, initial = {}, initialImages = [], successUrl }: Props) {
   const router  = useRouter();
-  const [form, setForm]     = useState<FormState>({ ...EMPTY, ...initial });
-  const [images, setImages] = useState<DBImage[]>(initialImages);
-  const [saving, setSaving] = useState(false);
-  const [error, setError]   = useState("");
+  const [form, setForm]       = useState<FormState>({ ...EMPTY, ...initial });
+  const [images, setImages]   = useState<DBImage[]>(initialImages);
+  const [saving, setSaving]   = useState(false);
+  const [error, setError]     = useState("");
+  const [duplicateId, setDuplicateId] = useState<number | null>(null);
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -143,6 +144,11 @@ export function MovieForm({ mode, movieId, initial = {}, initialImages = [], suc
         body:    JSON.stringify(payload),
       });
       const data = await res.json();
+      // Duplicado: la película ya existe
+      if (res.status === 409) {
+        setDuplicateId(data.id ?? null);
+        return;
+      }
       if (!res.ok) throw new Error(data.error?.formErrors?.[0] ?? data.error ?? "Error al guardar");
       const defaultUrl = mode === "create" ? `/peliculas/${data.id}/editar` : `/peliculas/${movieId}`;
       router.push(successUrl ?? defaultUrl);
@@ -163,7 +169,7 @@ export function MovieForm({ mode, movieId, initial = {}, initialImages = [], suc
       {/* ── Búsqueda OMDb (solo create) ── */}
       {mode === "create" && (
         <section>
-          <SectionTitle>Buscar en OMDb</SectionTitle>
+          <SectionTitle>Buscar en TMDB - OMDb</SectionTitle>
           <OmdbSearch onSelect={onOmdbSelect} />
         </section>
       )}
@@ -439,6 +445,33 @@ export function MovieForm({ mode, movieId, initial = {}, initialImages = [], suc
           )}
         </div>
       </div>
+
+      {/* ── Duplicado ── */}
+      {duplicateId && (
+        <div className="flex items-start gap-3 p-4 rounded-md border border-[var(--gold)] bg-[var(--gold-dim)]">
+          <span className="text-[var(--gold)] text-lg flex-shrink-0">⚠</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-text">Esta película ya está en tu colección.</p>
+            <div className="flex items-center gap-3 mt-2 flex-wrap">
+              <a
+                href={`/peliculas/${duplicateId}`}
+                className="text-sm text-[var(--accent)] hover:underline"
+              >
+                Ver ficha existente →
+              </a>
+              {successUrl && (
+                <button
+                  type="button"
+                  onClick={() => router.push(successUrl)}
+                  className="text-sm text-text-faint hover:text-text transition-colors"
+                >
+                  Continuar sin guardar →
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Error + Submit ── */}
       {error && <p className="text-sm text-[var(--error)]">{error}</p>}

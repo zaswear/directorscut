@@ -4,6 +4,8 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight, CheckCircle, AlertCircle } from "lucide-react";
 import { db } from "@/lib/db";
 import { searchOmdb, getOmdbById, parseOmdbMovie } from "@/lib/omdb";
+import { searchTmdb, getTmdbById, parseTmdbMovie } from "@/lib/tmdb";
+
 import { MovieForm } from "@/components/movies/movie-form";
 import type { MovieCreateInput } from "@/lib/schemas";
 
@@ -80,31 +82,46 @@ export default async function ImportLikelistPage({ searchParams }: Props) {
 
   const title = titles[idx];
 
-  // ── Buscar en OMDb (con manejo de error) ───────────────────────────────────
+  // ── Buscar: TMDB primero (sin límite diario), OMDb como fallback ─────────────
   let initial: Partial<MovieCreateInput> = { title, status: "vista", myRating: 5 };
-  let omdbImdbId: string | null = null;
-  let omdbError = false;
+  let foundImdbId: string | null = null;
+  let searchError = false;
 
   try {
-    const results = await searchOmdb(title);
-    const best    = results[0] ?? null;
-    if (best) {
-      omdbImdbId = best.imdbID;
-      const detail = await getOmdbById(best.imdbID);
+    // 1. TMDB
+    const tmdbResults = await searchTmdb(title);
+    const tmdbBest    = tmdbResults[0] ?? null;
+    if (tmdbBest) {
+      const detail = await getTmdbById(tmdbBest.id);
       if (detail) {
-        initial = { ...parseOmdbMovie(detail), myRating: 5, status: "vista", watchFormat: null };
+        const parsed = parseTmdbMovie(detail);
+        initial      = { ...parsed, myRating: 5, status: "vista", watchFormat: null };
+        foundImdbId  = parsed.imdbId ?? null;
       }
     }
   } catch {
-    omdbError = true;
+    // 2. Fallback a OMDb
+    try {
+      const omdbResults = await searchOmdb(title);
+      const omdbBest    = omdbResults[0] ?? null;
+      if (omdbBest) {
+        foundImdbId = omdbBest.imdbID;
+        const detail = await getOmdbById(omdbBest.imdbID);
+        if (detail) {
+          initial = { ...parseOmdbMovie(detail), myRating: 5, status: "vista", watchFormat: null };
+        }
+      }
+    } catch {
+      searchError = true;
+    }
   }
 
   // ── Comprobar duplicado (con manejo de error) ──────────────────────────────
   let existing: { id: number; title: string } | null = null;
-  if (omdbImdbId) {
+  if (foundImdbId) {
     try {
       const found = await db.movie.findUnique({
-        where:  { imdbId: omdbImdbId },
+        where:  { imdbId: foundImdbId! },
         select: { id: true, title: true },
       });
       existing = found;
@@ -145,14 +162,14 @@ export default async function ImportLikelistPage({ searchParams }: Props) {
 
       {/* ── Avisos ── */}
       <div className="px-8 pt-5 space-y-3">
-        {omdbError && (
+        {searchError && (
           <p className="text-sm text-[var(--warning)] bg-[var(--surface)] border border-[var(--warning)]/40 rounded-md px-4 py-2.5">
-            OMDb no respondió para &ldquo;{title}&rdquo;. Búscalo manualmente en el formulario.
+            No se pudo buscar &ldquo;{title}&rdquo; automáticamente. Búscalo manualmente en el formulario.
           </p>
         )}
-        {!omdbError && !omdbImdbId && (
+        {!searchError && !foundImdbId && (
           <p className="text-sm text-[var(--warning)] bg-[var(--surface)] border border-[var(--warning)]/40 rounded-md px-4 py-2.5">
-            OMDb no encontró &ldquo;{title}&rdquo; automáticamente. Búscalo manualmente.
+            No se encontró &ldquo;{title}&rdquo; automáticamente. Búscalo manualmente.
           </p>
         )}
       </div>
