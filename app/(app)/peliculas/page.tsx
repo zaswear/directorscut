@@ -41,10 +41,7 @@ export default async function PeliculasPage() {
       {/* Header fijo */}
       <div className="flex items-center justify-between px-8 py-5 border-b border-[var(--border)] flex-shrink-0">
         <div>
-          <h1
-            className="text-[32px] italic leading-none text-text"
-            style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontWeight: 600 }}
-          >
+          <h1 className="font-display font-semibold text-[32px] italic leading-none text-text">
             Mis películas
           </h1>
           <p className="text-xs text-text-faint font-mono mt-1">{movies.length} entradas</p>

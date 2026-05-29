@@ -26,8 +26,7 @@ export default async function ImportPage() {
       {/* Header */}
       <div className="mb-8">
         <h1
-          className="text-[38px] italic text-text leading-none"
-          style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontWeight: 600 }}
+          className="font-display font-semibold text-[38px] italic text-text leading-none"
         >
           Importar desde IMDb
         </h1>

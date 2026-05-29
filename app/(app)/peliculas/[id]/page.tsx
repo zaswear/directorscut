@@ -75,8 +75,7 @@ export default async function MovieDetailPage({ params }: { params: { id: string
           ) : (
             <div className="w-full aspect-[2/3] rounded-md bg-[var(--surface)] flex items-center justify-center p-4">
               <span
-                className="text-center italic text-text-faint text-lg leading-tight"
-                style={{ fontFamily: "var(--font-cormorant), Georgia, serif" }}
+                className="font-display text-center italic text-text-faint text-lg leading-tight"
               >
                 {movie.title}
               </span>
@@ -88,8 +87,7 @@ export default async function MovieDetailPage({ params }: { params: { id: string
         <div className="min-w-0">
           {/* Title */}
           <h1
-            className="text-[38px] md:text-[48px] italic leading-none text-text mb-1"
-            style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontWeight: 600 }}
+            className="font-display font-semibold text-[38px] md:text-[48px] italic leading-none text-text mb-1"
           >
             {movie.title}
           </h1>

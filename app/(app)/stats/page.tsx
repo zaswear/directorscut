@@ -120,8 +120,7 @@ export default async function StatsPage() {
   return (
     <div className="px-8 py-8">
       <h1
-        className="text-[38px] italic text-text leading-none mb-8"
-        style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontWeight: 600 }}
+        className="font-display font-semibold text-[38px] italic text-text leading-none mb-8"
       >
         Estadísticas
       </h1>

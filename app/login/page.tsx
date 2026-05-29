@@ -41,10 +41,7 @@ function LoginForm() {
 
       {/* Wordmark */}
       <div className="mb-10 text-center">
-        <h1
-          className="font-display italic text-[52px] leading-tight tracking-[-0.01em] text-text"
-          style={{ fontFamily: "var(--font-cormorant), Georgia, serif" }}
-        >
+        <h1 className="font-display font-semibold italic text-[52px] leading-tight tracking-[-0.01em] text-text">
           Director&rsquo;s Cut
         </h1>
         <p className="mt-2 text-sm text-text-faint tracking-wide">

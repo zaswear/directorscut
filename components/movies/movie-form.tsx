@@ -100,7 +100,7 @@ function Select({ className, ...props }: React.SelectHTMLAttributes<HTMLSelectEl
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="text-[11px] uppercase tracking-[0.1em] text-text-faint font-medium border-b border-[var(--border)] pb-2 mb-5">
+    <h3 className="font-display font-semibold italic text-[18px] text-text border-b border-[var(--border)] pb-2 mb-5">
       {children}
     </h3>
   );
@@ -207,7 +207,6 @@ export function MovieForm({ mode, movieId, initial = {}, initialImages = [] }: P
               <Field label="Título *">
                 <input
                   className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[6px] px-3 py-2 text-[18px] font-display italic text-text placeholder:text-text-faint focus:outline-none focus:border-[var(--border-focus)] transition-colors"
-                  style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontWeight: 600 }}
                   value={form.title}
                   onChange={(e) => set("title", e.target.value)}
                   placeholder="Título de la película"

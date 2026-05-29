@@ -7,8 +7,7 @@ export default function NuevaPeliculaPage() {
     <div>
       <div className="px-6 py-6 border-b border-[var(--border)]">
         <h1
-          className="text-[28px] italic text-text"
-          style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontWeight: 600 }}
+          className="font-display font-semibold text-[28px] italic text-text"
         >
           Nueva película
         </h1>

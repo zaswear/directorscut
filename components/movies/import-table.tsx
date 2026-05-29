@@ -208,7 +208,7 @@ export function ImportTable({ rows: initial }: Props) {
 
                   {/* Title */}
                   <td className="px-3 py-3">
-                    <p className="font-medium text-text truncate max-w-[280px]"
+                    <p className="font-display font-semibold italic text-text truncate max-w-[280px]"
                        style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontSize: "15px", fontStyle: "italic" }}>
                       {row.title}
                     </p>

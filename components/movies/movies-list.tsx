@@ -380,7 +380,6 @@ function GridView({ movies }: { movies: MovieItem[] }) {
               <div className="w-full h-full flex items-center justify-center p-3">
                 <span
                   className="text-center text-sm italic text-text-faint leading-tight"
-                  style={{ fontFamily: "var(--font-cormorant), Georgia, serif" }}
                 >
                   {m.title}
                 </span>
@@ -404,8 +403,7 @@ function GridView({ movies }: { movies: MovieItem[] }) {
           </div>
 
           <p
-            className="text-[13px] leading-tight truncate italic text-text group-hover:text-[var(--accent)] transition-colors"
-            style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontWeight: 600 }}
+            className="font-display text-[13px] leading-tight truncate italic text-text group-hover:text-[var(--accent)] transition-colors"
           >
             {m.title}
           </p>
@@ -457,7 +455,7 @@ function ListView({ movies }: { movies: MovieItem[] }) {
               <td className="px-3 py-2">
                 <Link href={`/peliculas/${m.id}`} className="group">
                   <p
-                    className="italic text-text group-hover:text-[var(--accent)] transition-colors truncate max-w-[260px]"
+                    className="font-display italic text-text group-hover:text-[var(--accent)] transition-colors truncate max-w-[260px]"
                     style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontSize: "15px", fontWeight: 600 }}
                   >
                     {m.title}

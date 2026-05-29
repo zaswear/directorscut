@@ -21,10 +21,7 @@ export function Sidebar() {
       {/* Wordmark */}
       <div className="px-5 pt-7 pb-6">
         <Link href="/peliculas">
-          <span
-            className="text-[22px] italic text-text leading-none select-none"
-            style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontWeight: 600 }}
-          >
+          <span className="font-display font-semibold text-[22px] italic text-text leading-none select-none">
             Director&rsquo;s Cut
           </span>
         </Link>
@@ -35,9 +32,9 @@ export function Sidebar() {
       {/* Nav */}
       <nav className="flex-1 px-2 py-2 space-y-0.5">
         {NAV.map(({ href, icon: Icon, label }) => {
-          const active = pathname === href || pathname.startsWith(href + "/") && href !== "/peliculas"
-            ? true
-            : pathname === href;
+          const active = href === "/peliculas"
+            ? pathname === href
+            : pathname === href || pathname.startsWith(href + "/");
 
           return (
             <Link

@@ -35,10 +35,7 @@ function DarkTooltip({ active, payload, label }: {
 function StatCard({ value, label, sub }: { value: string | number; label: string; sub?: string }) {
   return (
     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-md px-6 py-5">
-      <p
-        className="text-[38px] leading-none font-bold"
-        style={{ fontFamily: "var(--font-space-mono), monospace", color: "var(--accent)" }}
-      >
+      <p className="font-mono text-[38px] leading-none font-bold" style={{ color: "var(--accent)" }}>
         {value ?? "—"}
       </p>
       <p className="text-[11px] uppercase tracking-widest text-text-faint mt-2">{label}</p>
@@ -52,10 +49,7 @@ function StatCard({ value, label, sub }: { value: string | number; label: string
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2
-        className="text-[22px] italic mb-4 pb-2 border-b border-[var(--border)]"
-        style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontWeight: 600, color: "var(--text)" }}
-      >
+      <h2 className="font-display font-semibold text-[22px] italic text-text mb-4 pb-2 border-b border-[var(--border)]">
         {title}
       </h2>
       {children}
