@@ -37,9 +37,15 @@ export interface OmdbMovie {
 
 // ─── API calls ───────────────────────────────────────────────────────────────
 
-/** Busca películas por título. Resultados cacheados 24 h. */
-export async function searchOmdb(query: string): Promise<OmdbSearchResult[]> {
-  const url = `${OMDB_BASE}/?apikey=${apiKey()}&s=${encodeURIComponent(query)}&type=movie`;
+/** Busca películas por título, con año opcional. Resultados cacheados 24 h. */
+export async function searchOmdb(query: string, year?: string): Promise<OmdbSearchResult[]> {
+  const params = new URLSearchParams({
+    apikey: apiKey(),
+    s:      query,
+    type:   "movie",
+    ...(year ? { y: year } : {}),
+  });
+  const url = `${OMDB_BASE}/?${params}`;
   const res = await fetch(url, { next: { revalidate: 86400 } });
   if (!res.ok) throw new Error(`OMDb error ${res.status}`);
   const data = await res.json();
