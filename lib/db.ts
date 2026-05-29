@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { createClient as createLibSqlClient } from "@libsql/client";
-import { PrismaLibSql } from "@prisma/adapter-libsql"; // 1. Cambiado a PrismaLibSql (con 'q' minúscula)
+import { PrismaLibSql } from "@prisma/adapter-libsql";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -9,13 +8,15 @@ const globalForPrisma = globalThis as unknown as {
 function createClient(): PrismaClient {
   // Producción: Si estamos en Vercel y tenemos las variables de Turso
   if (process.env.TURSO_DATABASE_URL && process.env.NODE_ENV === "production") {
-    const libsql = createLibSqlClient({
+    const adapter = new PrismaLibSql({
       url: process.env.TURSO_DATABASE_URL,
       authToken: process.env.TURSO_AUTH_TOKEN,
     });
     
-    const adapter = new PrismaLibSql(libsql); // 2. Cambiado aquí también
-    return new PrismaClient({ adapter });
+    // Forzamos el tipado para que Prisma acepte el adapter externo sin quejarse en el build
+    return new PrismaClient({ 
+      adapter 
+    } as ConstructorParameters<typeof PrismaClient>[0]);
   }
 
   // Desarrollo / Fallback: SQLite local
