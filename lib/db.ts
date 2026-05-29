@@ -13,10 +13,10 @@ function createClient(): PrismaClient {
       authToken: process.env.TURSO_AUTH_TOKEN,
     });
     
-    // Forzamos el tipado para que Prisma acepte el adapter externo sin quejarse en el build
+    // Doble casteo (as unknown as ...) para silenciar definitivamente a TypeScript
     return new PrismaClient({ 
       adapter 
-    } as ConstructorParameters<typeof PrismaClient>[0]);
+    } as unknown as ConstructorParameters<typeof PrismaClient>[0]);
   }
 
   // Desarrollo / Fallback: SQLite local
