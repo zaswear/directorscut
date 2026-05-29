@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Surfaces */
+    --bg:              oklch(10%   0.010  52);
+    --surface:         oklch(13.5% 0.012  52);
+    --surface-hi:      oklch(17%   0.014  52);
+    --surface-overlay: oklch(17%   0.014  52 / 92%);
+
+    /* Borders */
+    --border:          oklch(100%  0      0  /  8%);
+    --border-hi:       oklch(100%  0      0  / 16%);
+    --border-focus:    oklch(74%   0.13   72);
+
+    /* Text */
+    --text:            oklch(94%   0.010  52);
+    --text-mid:        oklch(66%   0.012  52);
+    --text-faint:      oklch(44%   0.009  52);
+
+    /* Accent — reading lamp amber */
+    --accent:          oklch(74%   0.13   72);
+    --accent-dim:      oklch(74%   0.13   72 / 14%);
+    --accent-hover:    oklch(78%   0.13   72);
+
+    /* Semantic */
+    --success:         oklch(70%   0.14  155);
+    --warning:         oklch(75%   0.12   85);
+    --error:           oklch(62%   0.16   22);
+    --info:            oklch(65%   0.12  255);
+
+    /* Shadows */
+    --shadow-card:     0 2px  8px oklch(0% 0 0 / 40%);
+    --shadow-raised:   0 8px 24px oklch(0% 0 0 / 50%);
+    --shadow-modal:    0 24px 64px oklch(0% 0 0 / 70%);
+    --shadow-poster:   0 16px 48px oklch(0% 0 0 / 60%);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-dm-sans), system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100dvh;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 3px; }
+  * { scrollbar-width: thin; scrollbar-color: var(--border-hi) transparent; }
+
+  /* Focus */
+  :focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+  }
+
+  /* Links */
+  a { color: inherit; text-decoration: none; }
+}
+
+@layer utilities {
+  .font-display { font-family: var(--font-cormorant), Georgia, serif; }
+  .font-mono    { font-family: var(--font-space-mono), monospace; }
+
+  .text-balance { text-wrap: balance; }
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
