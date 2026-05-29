@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  LineChart, Line, ResponsiveContainer,
+  ResponsiveContainer,
 } from "recharts";
 import type { StatsData } from "@/app/(app)/stats/page";
 

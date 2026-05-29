@@ -4,7 +4,6 @@ import Image from "next/image";
 import { Pencil, ExternalLink, Clock, Globe, Tag } from "lucide-react";
 import { db } from "@/lib/db";
 import { parseMovie } from "@/lib/types";
-import { imageUrl } from "@/lib/cloudinary";
 import { ImageGallery } from "@/components/ui/image-gallery";
 import { DeleteMovieButton } from "@/components/movies/delete-movie-button";
 
