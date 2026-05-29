@@ -4,7 +4,10 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { MovieUpdateSchema } from "@/lib/schemas";
 
-type Ctx = Promise<{ id: string }>;
+// El contexto es un objeto que CONTIENE params como una Promesa
+type Ctx = {
+  params: Promise<{ id: string }>;
+};
 
 function parseId(id: string) {
   const n = parseInt(id);
@@ -13,7 +16,7 @@ function parseId(id: string) {
 
 export async function GET(_req: NextRequest, { params }: Ctx) {
   const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: "No unauthorized" }, { status: 401 });
 
   const { id: idParam } = await params;
   const id = parseId(idParam);
