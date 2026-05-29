@@ -5,6 +5,7 @@ const nextConfig = {
       { protocol: "https", hostname: "m.media-amazon.com" },
       { protocol: "https", hostname: "ia.media-imdb.com" },
       { protocol: "https", hostname: "res.cloudinary.com" },
+      { protocol: "https", hostname: "image.tmdb.org" },
     ],
   },
 };
