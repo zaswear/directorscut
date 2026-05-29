@@ -9,7 +9,8 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { href: "/peliculas",       icon: Film,     label: "Películas"      },
   { href: "/peliculas/nueva", icon: Plus,     label: "Nueva película" },
-  { href: "/admin/import",    icon: Upload,   label: "Importar"       },
+  { href: "/admin/import",           icon: Upload,   label: "Importar IMDb"     },
+  { href: "/admin/import-justwatch", icon: Upload,   label: "Importar JustWatch" },
   { href: "/stats",           icon: BarChart2, label: "Estadísticas"  },
 ];
 
