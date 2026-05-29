@@ -8,12 +8,13 @@ const idSchema = z.string().regex(/^tt\d+$/, "ID de IMDb inválido (formato: tt1
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
-  const parsed = idSchema.safeParse(params.id);
+  const { id: idParam } = await params;
+  const parsed = idSchema.safeParse(idParam);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
   }
