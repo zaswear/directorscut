@@ -89,6 +89,36 @@
   }
 }
 
+/* ── Tiptap editor ───────────────────────────────────────────────────────── */
+.prose-editor h2 { font-family: var(--font-cormorant), Georgia, serif; font-size: 22px; font-weight: 600; margin: 1.2em 0 0.5em; color: var(--text); }
+.prose-editor h3 { font-family: var(--font-cormorant), Georgia, serif; font-size: 18px; font-weight: 600; margin: 1em 0 0.4em; color: var(--text); }
+.prose-editor p  { margin: 0 0 0.8em; color: var(--text); line-height: 1.7; }
+.prose-editor strong { color: var(--text); }
+.prose-editor em { color: var(--text-mid); }
+.prose-editor ul { padding-left: 1.4em; margin: 0.5em 0 0.8em; color: var(--text); }
+.prose-editor li { margin: 0.2em 0; }
+.prose-editor blockquote { border-left: 2px solid var(--accent); margin: 1em 0; padding: 0.5em 0 0.5em 1em; color: var(--text-mid); font-style: italic; }
+.prose-editor p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: var(--text-faint); float: left; height: 0; pointer-events: none; }
+
+/* ── Movie detail ────────────────────────────────────────────────────────── */
+.section-heading {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 22px;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+.prose-review p       { margin: 0 0 1em; color: var(--text-mid); line-height: 1.75; font-size: 15px; }
+.prose-review h2      { font-family: var(--font-cormorant), Georgia, serif; font-size: 22px; font-weight: 600; margin: 1.5em 0 0.6em; color: var(--text); }
+.prose-review h3      { font-family: var(--font-cormorant), Georgia, serif; font-size: 18px; font-weight: 600; margin: 1.2em 0 0.5em; color: var(--text); }
+.prose-review strong  { color: var(--text); font-weight: 600; }
+.prose-review em      { color: var(--text-mid); }
+.prose-review ul      { padding-left: 1.4em; margin: 0.5em 0 1em; }
+.prose-review li      { margin: 0.3em 0; color: var(--text-mid); }
+.prose-review blockquote { border-left: 2px solid var(--accent); padding: 0.5em 0 0.5em 1em; margin: 1em 0; color: var(--text-mid); font-style: italic; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     transition-duration: 0.01ms !important;
