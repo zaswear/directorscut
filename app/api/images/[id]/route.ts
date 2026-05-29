@@ -13,12 +13,16 @@ cloudinary.config({
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // 1. Corregido el cierre de los corchetes de TypeScript aquí: }> }
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
-  const id = parseInt(params.id);
+  // 2. Resolvemos la promesa aquí para obtener el ID real de la URL
+  const { id: idParam } = await params; 
+
+  // 3. Ahora usamos esa variable ya resuelta para el parseInt
+  const id = parseInt(idParam);
   if (isNaN(id)) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
 
   const image = await db.image.findUnique({ where: { id } });
