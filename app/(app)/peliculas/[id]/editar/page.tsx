@@ -6,13 +6,15 @@ import type { MovieCreateInput } from "@/lib/schemas";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  const movie = await db.movie.findUnique({ where: { id: parseInt(params.id) } });
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const movie  = await db.movie.findUnique({ where: { id: parseInt(id) } });
   return { title: movie ? `Editar · ${movie.title}` : "Editar" };
 }
 
-export default async function EditMoviePage({ params }: { params: { id: string } }) {
-  const id = parseInt(params.id);
+export default async function EditMoviePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: idParam } = await params;
+  const id = parseInt(idParam);
   if (isNaN(id)) notFound();
 
   const raw = await db.movie.findUnique({
