@@ -7,4 +7,89 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Schema completo se define en el paso 2
+// ─── Movie ────────────────────────────────────────────────────────────────────
+// watch_format: "cine" | "streaming" | "bluray" | "dvd" | "digital" | "otro"
+// status:       "vista" | "pendiente" | "en_progreso" | "descartada"
+
+model Movie {
+  id        Int    @id @default(autoincrement())
+  imdbId    String @unique @map("imdb_id")
+
+  // Datos automáticos (OMDb)
+  title         String
+  originalTitle String?  @map("original_title")
+  year          Int?
+  durationMin   Int?     @map("duration_min")
+  genres        String   @default("[]") // JSON: string[]
+  directors     String   @default("[]") // JSON: string[]
+  cast          String   @default("[]") // JSON: string[] (primeros 5)
+  plot          String?
+  posterUrl     String?  @map("poster_url")
+  imdbRating    Float?   @map("imdb_rating")
+  imdbVotes     Int?     @map("imdb_votes")
+  country       String?
+  language      String?
+  rated         String?
+
+  // Datos personales
+  myRating      Float?   @map("my_rating")
+  watchedAt     DateTime? @map("watched_at")
+  watchFormat   String?  @map("watch_format") // WatchFormat values
+  review        String?  // HTML del editor Tiptap
+  hasImdbReview Boolean  @default(false) @map("has_imdb_review")
+  notes         String?
+  status        String   @default("pendiente") // MovieStatus values
+
+  // Importación
+  importedFromImdb Boolean @default(false) @map("imported_from_imdb")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relaciones
+  images     Image[]
+  references Reference[]
+
+  @@index([status])
+  @@index([watchedAt])
+  @@index([myRating])
+  @@index([year])
+  @@map("movies")
+}
+
+// ─── Image ────────────────────────────────────────────────────────────────────
+// type: "gallery" | "poster_alt"
+
+model Image {
+  id       Int    @id @default(autoincrement())
+  movieId  Int    @map("movie_id")
+  publicId String @map("public_id")
+  url      String
+  width    Int?
+  height   Int?
+  type     String @default("gallery") // ImageType values
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@index([movieId])
+  @@map("images")
+}
+
+// ─── Reference ───────────────────────────────────────────────────────────────
+
+model Reference {
+  id      Int    @id @default(autoincrement())
+  movieId Int    @map("movie_id")
+  title   String
+  url     String
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@index([movieId])
+  @@map("references")
+}
