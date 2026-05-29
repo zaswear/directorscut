@@ -28,10 +28,11 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 interface Props {
-  mode:     "create" | "edit";
-  movieId?: number;
-  initial?: Partial<MovieCreateInput>;
+  mode:        "create" | "edit";
+  movieId?:    number;
+  initial?:    Partial<MovieCreateInput>;
   initialImages?: DBImage[];
+  successUrl?: string;   // URL personalizada tras guardar (ej. wizard de importación)
 }
 
 type FormState = MovieCreateInput & { imdbId: string };
@@ -106,7 +107,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function MovieForm({ mode, movieId, initial = {}, initialImages = [] }: Props) {
+export function MovieForm({ mode, movieId, initial = {}, initialImages = [], successUrl }: Props) {
   const router  = useRouter();
   const [form, setForm]     = useState<FormState>({ ...EMPTY, ...initial });
   const [images, setImages] = useState<DBImage[]>(initialImages);
@@ -143,7 +144,8 @@ export function MovieForm({ mode, movieId, initial = {}, initialImages = [] }: P
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error?.formErrors?.[0] ?? data.error ?? "Error al guardar");
-      router.push(mode === "create" ? `/peliculas/${data.id}/editar` : `/peliculas/${movieId}`);
+      const defaultUrl = mode === "create" ? `/peliculas/${data.id}/editar` : `/peliculas/${movieId}`;
+      router.push(successUrl ?? defaultUrl);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
