@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { MovieUpdateSchema } from "@/lib/schemas";
 
-type Ctx = { params: { id: string } };
+type Ctx = Promise<{ id: string }>;
 
 function parseId(id: string) {
   const n = parseInt(id);
@@ -15,7 +15,8 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
-  const id = parseId(params.id);
+  const { id: idParam } = await params;
+  const id = parseId(idParam);
   if (!id) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
 
   const movie = await db.movie.findUnique({
@@ -34,7 +35,8 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
-  const id = parseId(params.id);
+  const { id: idParam } = await params;
+  const id = parseId(idParam);
   if (!id) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
 
   const body = await req.json();
@@ -74,7 +76,8 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
-  const id = parseId(params.id);
+  const { id: idParam } = await params;
+  const id = parseId(idParam);
   if (!id) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
 
   await db.movie.delete({ where: { id } });
